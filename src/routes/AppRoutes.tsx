@@ -2,10 +2,16 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Home from "../pages/Home";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import LocationList from "../pages/locations/LocationList";
-import LocationDetail from "../pages/locations/LocationDetail";
-import { useAuth } from "../context/AuthContext";
+
+// Admin Layout & Management Sub-pages Import කරගැනීම
+import { AdminOverview } from "../pages/admin/AdminOverview";
+import { ManageUsers } from "../pages/admin/ManageUsers";
+import { ManageCategories } from "../pages/admin/ManageCategories";
+import { ManageLocations } from "../pages/admin/ManageLocations";
+import AdminLayout from "../pages/admin/AdminDashboard";
+import CreateCategory from "../pages/admin/categoryComponents/CreateCategory";
+import ViewCategory from "../pages/admin/categoryComponents/ViewCategory";
+import EditCategory from "../pages/admin/categoryComponents/EditCategory";
 
 // Strict Admin Protected Route component
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -16,7 +22,6 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // You can also check role flags here once context is fully populated
   return <>{children}</>;
 };
 
@@ -24,23 +29,32 @@ export const AppRoutes: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* PUBLIC ROUTES: Anyone can view home, locations, and details without logging in */}
+        {/* PUBLIC ROUTES: Anyone can view home */}
         <Route path="/" element={<Home />} />
-        <Route path="/locations" element={<LocationList />} />
-        <Route path="/locations/:id" element={<LocationDetail />} />
 
         {/* AUTH ROUTE: Only for Admin Login */}
         <Route path="/login" element={<Login />} />
 
-        {/* ADMIN-ONLY PROTECTED ROUTES: Manage categories, locations, and view users */}
+        {/* ADMIN-ONLY PROTECTED ROUTES WITH NESTED OUTLET */}
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboard />
+              <AdminLayout />
             </AdminRoute>
           }
-        />
+        >
+          {/* Default view when navigating to /admin */}
+          <Route index element={<AdminOverview />} />
+          
+          {/* Sub-pages rendered inside AdminLayout's <Outlet /> */}
+          <Route path="users" element={<ManageUsers />} />
+          <Route path="categories" element={<ManageCategories />} />
+          <Route path="categories/create" element={<CreateCategory />} />
+          <Route path="categories/view/:id" element={<ViewCategory />} />
+          <Route path="categories/edit/:id" element={<EditCategory />} />
+          <Route path="locations" element={<ManageLocations />} />
+        </Route>
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

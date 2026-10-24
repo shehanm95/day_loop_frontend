@@ -18,22 +18,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // On initial app load, check if tokens exist and fetch current admin profile if needed
+  // On initial app load, restore session from localStorage
   useEffect(() => {
-    const initializeAuth = async () => {
-      const token = localStorage.getItem("access_token");
-      if (token) {
-        try {
-          // Optional: If you have an endpoint like GET /api/v1/users/me, fetch user info here
-          // For now, we can decode or retrieve role if stored, or fetch profile
-          // Example: const response = await apiClient.get<User>("/api/v1/users/me");
-          // setUser(response.data);
-        } catch (error) {
-          console.error("Session restoration failed", error);
-          apiLogout();
+    const initializeAuth = () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const storedUser = localStorage.getItem("user_profile");
+
+        if (token && storedUser) {
+          setUser(JSON.parse(storedUser));
         }
+      } catch (error) {
+        console.error("Session restoration failed", error);
+        apiLogout();
+        localStorage.removeItem("user_profile");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     initializeAuth();
@@ -42,21 +43,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (credentials: UserLoginRequest) => {
     setIsLoading(true);
     try {
-      const tokens = await loginUser(credentials);
-      localStorage.setItem("access_token", tokens.access_token);
-      localStorage.setItem("refresh_token", tokens.refresh_token);
-
-      // Fetch user profile after successful login to check role
-      // Assuming your login or /me endpoint returns the User object containing the role
-      const userResponse = await apiClient.get<User>("/api/v1/users/me"); 
+      const response = await loginUser(credentials);
       
-      // Ensure the user logging in is actually an ADMIN based on your rules
-      if (userResponse.data.role !== UserRole.ADMIN) {
-        apiLogout();
+      const accessToken = response.access_token;
+      const refreshToken = response.refresh_token;
+      const loggedInUser = response.user;
+
+      // Save tokens to storage
+      localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("refresh_token", refreshToken);
+
+      // Validate that the user logging in has ADMIN privileges based on your requirements
+      if (loggedInUser.role !== UserRole.ADMIN) {
+        localStorage.clear();
         throw new Error("Access denied. Admin privileges required.");
       }
 
-      setUser(userResponse.data);
+      setUser(loggedInUser);
     } finally {
       setIsLoading(false);
     }
@@ -64,6 +67,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user_profile");
     apiLogout();
   };
 
@@ -71,7 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user || !!localStorage.getItem("access_token"),
+        isAuthenticated: !!user && !!localStorage.getItem("access_token"),
         isAdmin: user?.role === UserRole.ADMIN,
         isLoading,
         login,
