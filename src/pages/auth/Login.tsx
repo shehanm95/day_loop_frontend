@@ -12,7 +12,6 @@ export const Login: React.FC = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
-  const toastId = toast.loading("Logging in...");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,12 +21,10 @@ export const Login: React.FC = () => {
     try {
       await login({ email, password });
       // Redirect to admin dashboard upon successful admin login
-      toast.success("Login successful!", { id: toastId });
-      navigate("/admin");
+      toast.success("Login successful!");
+      navigate("/admin/categories");
     } catch (err: any) {
-        toast.error(err.message || "Failed to login. Please check your credentials.", {
-        id: toastId,
-      });
+        toast.error(err.message || "Failed to login. Please check your credentials.");
       console.error("Login failed:", err);
       setError(err.response?.data?.detail || err.message || "Failed to login. Please check your credentials.");
     } finally {

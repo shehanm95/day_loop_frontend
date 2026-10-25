@@ -1,0 +1,200 @@
+/* ===================================================================
+   LOCATION DETAIL STYLES (Fixed Overflow & Grid Blowout)
+   =================================================================== */
+
+.location-detail-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .location-detail-container {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+}
+
+.location-detail-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.location-detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.location-detail-back-btn:hover {
+  color: var(--primary-color);
+}
+
+.location-detail-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.location-detail-main-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  width: 100%;
+}
+
+.location-detail-hero {
+  position: relative;
+  height: 280px;
+  width: 100%;
+  background-color: var(--border-color);
+}
+
+@media (min-width: 640px) {
+  .location-detail-hero {
+    height: 384px;
+  }
+}
+
+.location-detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-detail-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.75) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-lg);
+}
+
+/* 
+  Fixes Grid Blowout: 
+  Setting min-width: 0 on grid items prevents them from expanding past their parent container when child elements contain long text or block elements.
+*/
+.location-detail-grid {
+  padding: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  min-width: 0;
+}
+
+.location-detail-left,
+.location-detail-sidebar {
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .location-detail-grid {
+    padding: var(--spacing-xl);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .location-detail-left {
+    grid-column: span 2 / span 2;
+  }
+}
+
+/* 
+  Fixes Description Text Overflow:
+  Ensures long words, inline links, and paragraphs wrap securely inside the container boundaries.
+*/
+.location-description-content {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.location-description-content p,
+.location-description-content ul,
+.location-description-content ol,
+.location-description-content li {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.location-info-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .location-info-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.location-info-card {
+  background-color: var(--bg-main);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.location-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .location-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.location-gallery-item {
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  height: 120px;
+  background-color: var(--bg-main);
+}
+
+.location-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.location-gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.location-map-wrapper {
+  background-color: var(--bg-main);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.location-map-container {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 260px;
+  width: 100%;
+  box-shadow: inset var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}

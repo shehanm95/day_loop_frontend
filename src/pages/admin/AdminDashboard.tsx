@@ -28,12 +28,6 @@ export const AdminLayout: React.FC = () => {
 
         <nav className="sidebar-nav">
           <Link
-            to="/admin"
-            className={`sidebar-link ${location.pathname === "/admin" ? "active" : ""}`}
-          >
-            📊 Dashboard Overview
-          </Link>
-          <Link
             to="/admin/users"
             className={`sidebar-link ${location.pathname.includes("/admin/users") ? "active" : ""}`}
           >
@@ -67,13 +61,12 @@ export const AdminLayout: React.FC = () => {
       <main className="admin-main">
         <header className="admin-topbar">
           <h1 className="topbar-title">
-            {location.pathname === "/admin" && "Dashboard Overview"}
             {location.pathname.includes("/admin/users") && "User Management"}
             {location.pathname.includes("/admin/categories") && "Category Management"}
             {location.pathname.includes("/admin/locations") && "Location Management"}
           </h1>
           <div className="topbar-actions">
-            <a href="/" className="home-link" target="_blank" rel="noreferrer">
+            <a href="/list" className="home-link" target="_blank" rel="noreferrer">
               Visit Site ↗
             </a>
           </div>

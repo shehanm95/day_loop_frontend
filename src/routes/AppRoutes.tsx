@@ -1,9 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
-import Home from "../pages/Home";
-
-// Admin Layout & Management Sub-pages Import කරගැනීම
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import { AdminOverview } from "../pages/admin/AdminOverview";
 import { ManageUsers } from "../pages/admin/ManageUsers";
 import { ManageCategories } from "../pages/admin/ManageCategories";
@@ -12,6 +11,11 @@ import AdminLayout from "../pages/admin/AdminDashboard";
 import CreateCategory from "../pages/admin/categoryComponents/CreateCategory";
 import ViewCategory from "../pages/admin/categoryComponents/ViewCategory";
 import EditCategory from "../pages/admin/categoryComponents/EditCategory";
+import { CreateLocationForm } from "../pages/admin/locationComponents/CreateLocationForm";
+import EditLocationForm from "../pages/admin/locationComponents/EditLocationForm";
+import { Home } from "../pages/Home";
+import LocationListDisplayLanding from "../pages/landing/LocationListDisplayLanding";
+import LocationDetailView from "../pages/landing/LocationDetailView";
 
 // Strict Admin Protected Route component
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -30,14 +34,17 @@ export const AppRoutes: React.FC = () => {
     <Router>
       <Routes>
         {/* PUBLIC ROUTES: Anyone can view home */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />}>
+          <Route path="list" element={<LocationListDisplayLanding />} />
+          <Route path="view/:id" element={<LocationDetailView />} />
+        </Route>
 
         {/* AUTH ROUTE: Only for Admin Login */}
         <Route path="/login" element={<Login />} />
 
         {/* ADMIN-ONLY PROTECTED ROUTES WITH NESTED OUTLET */}
         <Route
-          path="/admin"
+          path="/admin/"
           element={
             <AdminRoute>
               <AdminLayout />
@@ -53,7 +60,10 @@ export const AppRoutes: React.FC = () => {
           <Route path="categories/create" element={<CreateCategory />} />
           <Route path="categories/view/:id" element={<ViewCategory />} />
           <Route path="categories/edit/:id" element={<EditCategory />} />
+
           <Route path="locations" element={<ManageLocations />} />
+          <Route path="locations/create" element={<CreateLocationForm />} />
+          <Route path="locations/edit/:id" element={<EditLocationForm />} />
         </Route>
 
         {/* Fallback */}

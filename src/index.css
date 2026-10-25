@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import 'react-quill-new/dist/quill.snow.css';
 /* =================================================================atea
    TOURISM WEBSITE DESIGN SYSTEM - INDEX.CSS
    =================================================================== */
